@@ -10,7 +10,7 @@ import { Neptune } from './Neptune'
 Neptune.start({
   maxPlayers: 200000,
   motd: {
-    line1: 'HyperstoneNetwork',
+    line1: 'strdstnetwork',
     line2: 'test',
   },
   port: 19131,

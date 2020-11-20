@@ -1,5 +1,5 @@
 import dgram from 'dgram'
-import { Event, EventEmitter } from '@hyperstonenet/utils.events'
+import { Event, EventEmitter } from '@strdstnet/utils.events'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
