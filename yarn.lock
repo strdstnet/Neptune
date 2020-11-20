@@ -898,20 +898,6 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@hyperstonenet/utils.anvil@^1.0.4":
-  version "1.0.8"
-  resolved "https://npm.pkg.github.com/download/@hyperstonenet/utils.anvil/1.0.8/ad3031aeacd4c2ff99421f69b482debbc5b6c6ea0d19df7e88fec6e28f9e8167#673598dcf7b19eebd19d226eacdd827c61a1230a"
-  integrity sha512-prt5iG4Fi00itXndByImhVW9p3jOdFfOyCkBdKQGJli52MSjEoWRTOa7qcdmXiLPXljd03qETM3NavsnjGZubQ==
-  dependencies:
-    "@strdst/utils.binary" "^1.0.3"
-    "@strdst/utils.nbt" "^1.0.2"
-    fs-extra "^9.0.1"
-
-"@hyperstonenet/utils.events@^1.0.3":
-  version "1.0.3"
-  resolved "https://npm.pkg.github.com/download/@hyperstonenet/utils.events/1.0.3/f2dd526638b5d141d412a982f052110807a612828ebc2b1e3d87df3a0f3b6758#3d4a171c783619a97d40e081216528ea419a2a39"
-  integrity sha512-l0gMqM1j5xhdvTjNVFwyKVqfkbTZPDCy1Q721jIFZEXMbBvJOKS0FuoLcACj9tJ8K2EW7vd8goCnYkAY2mUxCA==
-
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
@@ -1158,6 +1144,20 @@
   version "1.0.2"
   resolved "https://npm.pkg.github.com/download/@strdst/utils.nbt/1.0.2/2ac0ab43add66538c356ebc40e536e300a88bdcd65f2566e7b7110e81c49091d#df949dc867568e290bc02dd9f2d2b591426d35a6"
   integrity sha512-vfGQuAlAfWYneIjHPDyQ4Z4+VUh85RaygVAg6PoZA3yiY51eGyMOMf+VHoSEmAcIFjr8rJZCb5Tenfcz0EfFBw==
+
+"@strdstnet/utils.anvil@^1.0.4":
+  version "1.0.9"
+  resolved "https://npm.pkg.github.com/download/@strdstnet/utils.anvil/1.0.9/60e2f885b10697ad1c289daa8405008feb06e69a83f6673c3cf124710907c970#5cf948f4706e208ea2ad0dba6320dd189695b9d4"
+  integrity sha512-8qfwQuwtPSHNnIt6tEO9ach9ZvzIHmr38x5Q+xtPZL5ZNhYxfy8e8t1+QW/3ohJuQTIo4nV6LmOnrNFWc3AYlw==
+  dependencies:
+    "@strdst/utils.binary" "^1.0.3"
+    "@strdst/utils.nbt" "^1.0.2"
+    fs-extra "^9.0.1"
+
+"@strdstnet/utils.events@^1.0.3":
+  version "1.0.4"
+  resolved "https://npm.pkg.github.com/download/@strdstnet/utils.events/1.0.4/9000fd1ce6219e722274ac75feb5380dd7ffb54836be6c85865ea6073c0b8637#37404df9e7b4dee614921a4960aec036aa400295"
+  integrity sha512-ngrn22g/dTh19YGgPBs3PsmBI7GzVT+gW5/HdOP39eUhuOFs02VGxsqskzLY8vIkGhFGLYSQdWofJ3dp0z6e4A==
 
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
