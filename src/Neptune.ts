@@ -152,6 +152,8 @@ export class Neptune extends EventEmitter<ServerEvents> {
     return UnconnectedPong.getMOTD({
       line1, line2, maxPlayers,
       numPlayers: this.clients.size,
+      gamemode: 'Survival',
+      serverId: BigInt(Protocol.SERVER_ID),
     })
   }
 
@@ -185,6 +187,7 @@ export class Neptune extends EventEmitter<ServerEvents> {
       packet: new UnconnectedPong({
         pingId,
         motd: this.motd,
+        serverId: Protocol.SERVER_ID,
       }),
       socket,
       address,

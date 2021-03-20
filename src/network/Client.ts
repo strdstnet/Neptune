@@ -16,7 +16,11 @@ export class Client extends Socket {
 
   public server!: Server
 
-  private splits: Map<number, BinaryData[]> = new Map()
+  private splits: {
+    [k: number]: {
+      [k: number]: BinaryData
+    }
+  } = {}
 
   constructor(socket: dgram.Socket, addr: IAddress, mtuSize: number) {
     super({ addr, mtuSize }, socket)
@@ -41,6 +45,7 @@ export class Client extends Socket {
       } else if(data.buf[0] === Packets.PARTIAL_PACKET) {
         this.handlePartialPacket(data)
       } else {
+        console.log('sending', data.readByte(false))
         this.send(data)
       }
     })
@@ -55,25 +60,25 @@ export class Client extends Socket {
     const partId = data.readShort()
     const pData = data.readByteArray(data.length - data.pos)
 
-    const parts = this.splits.get(id)
+    console.log(`${partId + 1}/${partCount} (#${partId})`)
 
-    if(!parts) {
-      const arr = new Array(partCount)
-      arr[partId] = pData
-      this.splits.set(id, arr)
-    } else {
-      parts[partId] = pData
-      this.splits.set(id, parts)
-    }
+    if(!this.splits[id]) this.splits[id] = []
 
-    if(parts && parts.length === partCount) {
+    this.splits[id][partId] = pData
+
+    const count = Object.keys(this.splits[id]).length
+
+    console.log(`Got ${count}/${partCount}`)
+
+    if(count === partCount) {
       const bd = new BinaryData()
-      // bd.writeByte(data.buf[0])
 
-      for(const part of parts) {
+      for(const part of Object.values(this.splits[id])) {
         bd.writeByteArray(part, false)
       }
 
+      delete this.splits[id]
+      bd.pos = 0
       this.handleGluedPacket(bd)
     }
   }
@@ -105,7 +110,7 @@ export class Client extends Socket {
     }))
 
     this.setServer(new Server(serverType, {
-      ip: '192.168.0.11',
+      ip: '192.168.1.227',
       port: 19134,
       family: 4,
     }, this.mtuSize))

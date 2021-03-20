@@ -54,7 +54,7 @@ export abstract class Socket extends EventEmitter<SocketEvents> {
     const flags = data.readByte(false)
     const proxy = true
 
-    // this.logger.debug(`Received ${flags}`)
+    this.logger.debug(`Received ${flags}`)
     this.emit('data', new Event({ data }))
 
     if(flags & BitFlag.ACK) {
