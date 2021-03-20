@@ -10,10 +10,13 @@ import { Packets } from '../types/protocol'
 import { ChangeDimension } from './bedrock/ChangeDimension'
 import { Dimension } from '../types/world'
 import { Vector3 } from 'math3d'
+import { BinaryData } from '../utils/BinaryData'
 
 export class Client extends Socket {
 
   public server!: Server
+
+  private splits: Map<number, BinaryData[]> = new Map()
 
   constructor(socket: dgram.Socket, addr: IAddress, mtuSize: number) {
     super({ addr, mtuSize }, socket)
@@ -33,17 +36,62 @@ export class Client extends Socket {
     this.server = server
 
     this.server.on('data', ({ data: { data } }) => {
-      if(data.readByte(false) === Packets.EZ_TRANSFER) {
-        const pk = new EzTransfer()
-        pk.parse(data)
-
-        this.handleEzTransfer(pk)
+      if(data.buf[0] === Packets.EZ_TRANSFER) {
+        this.handleEzTransferData(data)
+      } else if(data.buf[0] === Packets.PARTIAL_PACKET) {
+        this.handlePartialPacket(data)
       } else {
         this.send(data)
       }
     })
 
     return this
+  }
+
+  private handlePartialPacket(data: BinaryData) {
+    data.readByte() // PARTIAL_PACKET
+    const id = data.readByte()
+    const partCount = data.readShort()
+    const partId = data.readShort()
+    const pData = data.readByteArray(data.length - data.pos)
+
+    const parts = this.splits.get(id)
+
+    if(!parts) {
+      const arr = new Array(partCount)
+      arr[partId] = pData
+      this.splits.set(id, arr)
+    } else {
+      parts[partId] = pData
+      this.splits.set(id, parts)
+    }
+
+    if(parts && parts.length === partCount) {
+      const bd = new BinaryData()
+      // bd.writeByte(data.buf[0])
+
+      for(const part of parts) {
+        bd.writeByteArray(part, false)
+      }
+
+      this.handleGluedPacket(bd)
+    }
+  }
+
+  public handleGluedPacket(data: BinaryData): void {
+    const pkId = data.readByte(false)
+    switch(pkId) {
+      case Packets.EZ_TRANSFER:
+        return this.handleEzTransferData(data)
+      default:
+        throw new Error(`Got unknown glued packetId: ${pkId}`)
+    }
+  }
+
+  public handleEzTransferData(data: BinaryData): void {
+    const pk = new EzTransfer().parse(data)
+
+    this.handleEzTransfer(pk)
   }
 
   public async handleEzTransfer(pk: EzTransfer): Promise<void> {
