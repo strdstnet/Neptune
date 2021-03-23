@@ -1,4 +1,4 @@
-import { IAddress } from './types/network'
+import { IAddress } from '@strdstnet/utils.binary'
 
 export enum ServerType {
   LOBBY = 'hsn.lobby',

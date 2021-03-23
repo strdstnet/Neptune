@@ -12,5 +12,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "declaration": true
-  }
+  },
+  "include": ["src"],
+  "exclude": ["**/*.test.ts"]
 }

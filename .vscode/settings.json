@@ -1,6 +1,6 @@
 {
   "files.eol": "\r\n",
-  "eslint.packageManager": "yarn",
+  "eslint.packageManager": "npm",
   "eslint.alwaysShowStatus": true,
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,

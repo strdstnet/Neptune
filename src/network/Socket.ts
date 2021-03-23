@@ -318,31 +318,34 @@ export abstract class Socket extends EventEmitter<SocketEvents> {
 
 import Logger from '@bwatton/logger'
 import { Neptune } from '../Neptune'
-import { Disconnect } from './bedrock/Disconnect'
-import { BinaryData, BitFlag } from '../utils/BinaryData'
-import { PacketBatch } from './bedrock/PacketBatch'
-import { bundlePackets } from '../utils/parseBundledPackets'
-import { BatchedPacket } from './bedrock/BatchedPacket'
-import { Reliability } from '../utils/Reliability'
-import { PartialPacket } from './custom/PartialPacket'
-import { PacketViolationWarning } from './bedrock/PacketViolationWarning'
-import { Login } from './bedrock/Login'
-import { PlayStatus } from './bedrock/PlayStatus'
-import { ResourcePacksInfo } from './bedrock/ResourcePacksInfo'
-import { Text, TextType } from './bedrock/Text'
-import { BundledPacket } from './raknet/BundledPacket'
-import { DummyAddress, IAddress, IBundledPacket } from '../types/network'
-import { PacketBundle } from './raknet/PacketBundle'
-import { NAK } from './raknet/NAK'
-import { Packets, Protocol } from '../types/protocol'
-import { ConnectionRequest } from './raknet/ConnectionRequest'
-import { NewIncomingConnection } from './raknet/NewIncomingConnection'
-import { ConnectedPing } from './raknet/ConnectedPing'
-import { ACK } from './raknet/ACK'
-import { ConnectedPong } from './raknet/ConnectedPong'
-import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
-import { PlayStatusType } from '../types/world'
-import { Server } from './Server'
 import { Client } from './Client'
-import { Packet } from './Packet'
+import { IAddress, BinaryData } from '@strdstnet/utils.binary'
+import {
+  BitFlag,
+  ACK,
+  NAK,
+  BundledPacket,
+  Disconnect,
+  PacketBundle,
+  ConnectedPing,
+  PacketBatch,
+  Packet,
+  NewIncomingConnection,
+  ConnectedPong,
+  ConnectionRequest,
+  ConnectionRequestAccepted,
+  bundlePackets,
+  PlayStatusType,
+  BatchedPacket,
+  Reliability,
+  PacketViolationWarning,
+  PartialPacket,
+  Packets,
+  Protocol,
+  Login,
+  PlayStatus,
+  Text, TextType,
+  ResourcePacksInfo,
+  DummyAddress, IBundledPacket,
+} from '@strdstnet/protocol'
 
