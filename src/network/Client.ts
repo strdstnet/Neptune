@@ -9,6 +9,7 @@ import {
   Dimension,
   EzLogin, EzTransfer,
   OpenConnectionReplyTwo,
+  PacketSegmenter,
 } from '@strdstnet/protocol'
 import { ServerType } from '../API'
 import { Neptune } from '../Neptune'
@@ -50,7 +51,7 @@ export class Client extends Socket {
         // this.handlePartialPacket(data)
         this.segmentHandler.handle(data)
       } else {
-        console.log('sending', data.readByte(false))
+        // console.log('sending', data.readByte(false))
         this.send(data)
       }
     })
@@ -115,18 +116,27 @@ export class Client extends Socket {
     }))
 
     this.setServer(new Server(serverType as ServerType, {
-      ip: '192.168.1.227',
-      port: 19134,
+      ip: '127.0.0.1',
+      port: 19133,
       family: 4,
     }, this.mtuSize))
 
-    this.server.send(new EzLogin({
+    const data = PacketSegmenter.segment(new EzLogin({
       address: this.address,
       mtuSize: this.mtuSize,
       clientId,
       sequenceNumber,
       loginData,
-    }))
+    }), this.mtuSize)
+
+    const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+    for(const part of data) {
+      console.log(part)
+      console.log(part instanceof BinaryData)
+      this.server.send(part)
+      await wait(1)
+    }
   }
 
 }

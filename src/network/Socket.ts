@@ -54,7 +54,7 @@ export abstract class Socket extends EventEmitter<SocketEvents> {
     const flags = data.readByte(false)
     const proxy = true
 
-    this.logger.debug(`Received ${flags}`)
+    // this.logger.debug(`Received ${flags}`)
     this.emit('data', new Event({ data }))
 
     if(flags & BitFlag.ACK) {
@@ -178,12 +178,12 @@ export abstract class Socket extends EventEmitter<SocketEvents> {
     if(packet instanceof BundledPacket) {
       // this.logger.debug(`Sending (BP) ${packet.constructor.name}`)
       this.sendQueue.push(packet)
-    } else if(packet instanceof BinaryData) {
+    } else if((packet as any).buf) {
       // this.logger.debug(`Sending (BD) ${packet.readByte(false)}`, packet.buf)
-      this.sendData(packet)
+      this.sendData(packet as BinaryData)
     } else {
       // this.logger.debug(`Sending (P) ${packet.constructor.name}`)
-      this.sendData(packet.encode())
+      this.sendData((packet as Packet<any>).encode())
     }
   }
 

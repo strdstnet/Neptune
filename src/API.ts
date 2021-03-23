@@ -28,7 +28,7 @@ export class API {
       // ip: 'play.hyperstone.io',
       ip: '127.0.0.1', // works
       // port: 19132,
-      port: 19132,
+      port: 19131,
       family: 4,
     }
   }

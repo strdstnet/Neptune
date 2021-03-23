@@ -6,6 +6,7 @@
   "types_": "lib/index.d.ts",
   "scripts": {
     "start": "nodemon",
+    "start:raw": "ts-node -T src/start.ts",
     "start:client": "ts-node src/client/test.ts",
     "start:prod": "node lib/start.js",
     "test": "jest",
@@ -15,9 +16,9 @@
   },
   "dependencies": {
     "@bwatton/logger": "^1.0.4",
-    "@strdstnet/protocol": "^1.201.7",
+    "@strdstnet/protocol": "1.210.4",
     "@strdstnet/utils.anvil": "^1.0.4",
-    "@strdstnet/utils.binary": "^1.1.8",
+    "@strdstnet/utils.binary": "^1.1.9",
     "@strdstnet/utils.events": "^1.0.3",
     "chalk": "^3.0.0",
     "fs-extra": "^9.0.1",
