@@ -79,7 +79,7 @@ export abstract class Socket extends EventEmitter<SocketEvents> {
   }
 
   public disconnect(message: string, hideScreen = false): void {
-    this.send(new Disconnect({
+    this.sendBatched(new Disconnect({
       hideScreen,
       message,
     }))
