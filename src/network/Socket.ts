@@ -54,7 +54,7 @@ export abstract class Socket extends EventEmitter<SocketEvents> {
     const flags = data.readByte(false)
     const proxy = true
 
-    this.logger.debug(`Received ${flags}`)
+    // this.logger.debug(`Received ${flags}`)
     this.emit('data', new Event({ data }))
 
     if(flags & BitFlag.ACK) {
@@ -178,12 +178,12 @@ export abstract class Socket extends EventEmitter<SocketEvents> {
     if(packet instanceof BundledPacket) {
       // this.logger.debug(`Sending (BP) ${packet.constructor.name}`)
       this.sendQueue.push(packet)
-    } else if(packet instanceof BinaryData) {
+    } else if((packet as any).buf) {
       // this.logger.debug(`Sending (BD) ${packet.readByte(false)}`, packet.buf)
-      this.sendData(packet)
+      this.sendData(packet as BinaryData)
     } else {
       // this.logger.debug(`Sending (P) ${packet.constructor.name}`)
-      this.sendData(packet.encode())
+      this.sendData((packet as Packet<any>).encode())
     }
   }
 
@@ -318,31 +318,34 @@ export abstract class Socket extends EventEmitter<SocketEvents> {
 
 import Logger from '@bwatton/logger'
 import { Neptune } from '../Neptune'
-import { Disconnect } from './bedrock/Disconnect'
-import { BinaryData, BitFlag } from '../utils/BinaryData'
-import { PacketBatch } from './bedrock/PacketBatch'
-import { bundlePackets } from '../utils/parseBundledPackets'
-import { BatchedPacket } from './bedrock/BatchedPacket'
-import { Reliability } from '../utils/Reliability'
-import { PartialPacket } from './custom/PartialPacket'
-import { PacketViolationWarning } from './bedrock/PacketViolationWarning'
-import { Login } from './bedrock/Login'
-import { PlayStatus } from './bedrock/PlayStatus'
-import { ResourcePacksInfo } from './bedrock/ResourcePacksInfo'
-import { Text, TextType } from './bedrock/Text'
-import { BundledPacket } from './raknet/BundledPacket'
-import { DummyAddress, IAddress, IBundledPacket } from '../types/network'
-import { PacketBundle } from './raknet/PacketBundle'
-import { NAK } from './raknet/NAK'
-import { Packets, Protocol } from '../types/protocol'
-import { ConnectionRequest } from './raknet/ConnectionRequest'
-import { NewIncomingConnection } from './raknet/NewIncomingConnection'
-import { ConnectedPing } from './raknet/ConnectedPing'
-import { ACK } from './raknet/ACK'
-import { ConnectedPong } from './raknet/ConnectedPong'
-import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
-import { PlayStatusType } from '../types/world'
-import { Server } from './Server'
 import { Client } from './Client'
-import { Packet } from './Packet'
+import { IAddress, BinaryData } from '@strdstnet/utils.binary'
+import {
+  BitFlag,
+  ACK,
+  NAK,
+  BundledPacket,
+  Disconnect,
+  PacketBundle,
+  ConnectedPing,
+  PacketBatch,
+  Packet,
+  NewIncomingConnection,
+  ConnectedPong,
+  ConnectionRequest,
+  ConnectionRequestAccepted,
+  bundlePackets,
+  PlayStatusType,
+  BatchedPacket,
+  Reliability,
+  PacketViolationWarning,
+  PartialPacket,
+  Packets,
+  Protocol,
+  Login,
+  PlayStatus,
+  Text, TextType,
+  ResourcePacksInfo,
+  DummyAddress, IBundledPacket,
+} from '@strdstnet/protocol'
 

@@ -1,6 +1,6 @@
 import { Socket } from './Socket'
 import { ServerType } from '../API'
-import { IAddress } from '../types/network'
+import { IAddress } from '@strdstnet/utils.binary'
 
 export class Server extends Socket {
 

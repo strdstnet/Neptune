@@ -1,6 +1,3 @@
-import './types/protocol'
-import './types/server'
-
 import Logger from '@bwatton/logger'
 
 Logger.defaults.showMilliseconds = true
@@ -13,7 +10,7 @@ Neptune.start({
     line1: 'strdstnetwork',
     line2: 'test',
   },
-  port: 19131,
+  port: 19132,
 })
 
 // const logger = new Logger('V8::GC')

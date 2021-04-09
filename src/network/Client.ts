@@ -1,26 +1,30 @@
 import { Socket } from './Socket'
-import { OpenConnectionReplyTwo } from './raknet/OpenConnectionReplyTwo'
-import { IAddress } from '../types/network'
 import dgram from 'dgram'
-import { EzTransfer } from './custom/EzTransfer'
-import { Login } from './bedrock/Login'
-import { EzLogin } from './custom/EzLogin'
 import { Server } from './Server'
-import { Packets } from '../types/protocol'
-import { ChangeDimension } from './bedrock/ChangeDimension'
-import { Dimension } from '../types/world'
-import { Vector3 } from 'math3d'
-import { BinaryData } from '../utils/BinaryData'
+import { IAddress, BinaryData, Vector3 } from '@strdstnet/utils.binary'
+import {
+  SegmentHandler,
+  ChangeDimension,
+  Packets,
+  Dimension,
+  EzLogin, EzTransfer,
+  OpenConnectionReplyTwo,
+  PacketSegmenter,
+} from '@strdstnet/protocol'
+import { ServerType } from '../API'
+import { Neptune } from '../Neptune'
 
 export class Client extends Socket {
 
   public server!: Server
 
-  private splits: {
-    [k: number]: {
-      [k: number]: BinaryData
-    }
-  } = {}
+  // private splits: {
+  //   [k: number]: {
+  //     [k: number]: BinaryData
+  //   }
+  // } = {}
+
+  private segmentHandler = new SegmentHandler(({ data }) => this.handleGluedPacket(data))
 
   constructor(socket: dgram.Socket, addr: IAddress, mtuSize: number) {
     super({ addr, mtuSize }, socket)
@@ -33,6 +37,7 @@ export class Client extends Socket {
     this.send(new OpenConnectionReplyTwo({
       address: this.address,
       mtuSize: this.mtuSize,
+      serverId: Neptune.id,
     }))
   }
 
@@ -43,9 +48,10 @@ export class Client extends Socket {
       if(data.buf[0] === Packets.EZ_TRANSFER) {
         this.handleEzTransferData(data)
       } else if(data.buf[0] === Packets.PARTIAL_PACKET) {
-        this.handlePartialPacket(data)
+        // this.handlePartialPacket(data)
+        this.segmentHandler.handle(data)
       } else {
-        console.log('sending', data.readByte(false))
+        // console.log('sending', data.readByte(false))
         this.send(data)
       }
     })
@@ -53,35 +59,35 @@ export class Client extends Socket {
     return this
   }
 
-  private handlePartialPacket(data: BinaryData) {
-    data.readByte() // PARTIAL_PACKET
-    const id = data.readByte()
-    const partCount = data.readShort()
-    const partId = data.readShort()
-    const pData = data.readByteArray(data.length - data.pos)
+  // private handlePartialPacket(data: BinaryData) {
+  //   data.readByte() // PARTIAL_PACKET
+  //   const id = data.readByte()
+  //   const partCount = data.readShort()
+  //   const partId = data.readShort()
+  //   const pData = data.readByteArray(data.length - data.pos)
 
-    console.log(`${partId + 1}/${partCount} (#${partId})`)
+  //   console.log(`${partId + 1}/${partCount} (#${partId})`)
 
-    if(!this.splits[id]) this.splits[id] = []
+  //   if(!this.splits[id]) this.splits[id] = []
 
-    this.splits[id][partId] = pData
+  //   this.splits[id][partId] = pData
 
-    const count = Object.keys(this.splits[id]).length
+  //   const count = Object.keys(this.splits[id]).length
 
-    console.log(`Got ${count}/${partCount}`)
+  //   console.log(`Got ${count}/${partCount}`)
 
-    if(count === partCount) {
-      const bd = new BinaryData()
+  //   if(count === partCount) {
+  //     const bd = new BinaryData()
 
-      for(const part of Object.values(this.splits[id])) {
-        bd.writeByteArray(part, false)
-      }
+  //     for(const part of Object.values(this.splits[id])) {
+  //       bd.writeByteArray(part, false)
+  //     }
 
-      delete this.splits[id]
-      bd.pos = 0
-      this.handleGluedPacket(bd)
-    }
-  }
+  //     delete this.splits[id]
+  //     bd.pos = 0
+  //     this.handleGluedPacket(bd)
+  //   }
+  // }
 
   public handleGluedPacket(data: BinaryData): void {
     const pkId = data.readByte(false)
@@ -109,19 +115,28 @@ export class Client extends Socket {
       position: new Vector3(0, 0, 0),
     }))
 
-    this.setServer(new Server(serverType, {
-      ip: '192.168.1.227',
-      port: 19134,
+    this.setServer(new Server(serverType as ServerType, {
+      ip: '127.0.0.1',
+      port: 19133,
       family: 4,
     }, this.mtuSize))
 
-    this.server.send(new EzLogin({
+    const data = PacketSegmenter.segment(new EzLogin({
       address: this.address,
       mtuSize: this.mtuSize,
       clientId,
       sequenceNumber,
       loginData,
-    }))
+    }), this.mtuSize)
+
+    const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+    for(const part of data) {
+      console.log(part)
+      console.log(part instanceof BinaryData)
+      this.server.send(part)
+      await wait(1)
+    }
   }
 
 }

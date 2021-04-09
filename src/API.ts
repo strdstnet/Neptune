@@ -1,4 +1,4 @@
-import { IAddress } from './types/network'
+import { IAddress } from '@strdstnet/utils.binary'
 
 export enum ServerType {
   LOBBY = 'hsn.lobby',
@@ -28,7 +28,7 @@ export class API {
       // ip: 'play.hyperstone.io',
       ip: '127.0.0.1', // works
       // port: 19132,
-      port: 19132,
+      port: 19131,
       family: 4,
     }
   }

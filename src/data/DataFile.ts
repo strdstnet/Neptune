@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { BinaryData } from '../utils/BinaryData'
+import { BinaryData } from '@strdstnet/utils.binary'
 
 export class DataFile extends BinaryData {
 

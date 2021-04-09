@@ -1,24 +1,29 @@
 import dgram, { Socket } from 'dgram'
 
 import Logger from '@bwatton/logger'
-import { ServerOpts } from './types/server'
 import { Client } from './network/Client'
 import { BedrockData } from './data/BedrockData'
-import { FamilyStrToInt, IAddress, IPacketHandlerArgs, ISendPacketArgs } from './types/network'
-import { BinaryData } from './utils/BinaryData'
-import { Packets, Protocol } from './types/protocol'
-import { UnconnectedPong } from './network/raknet/UnconnectedPong'
-import { UnconnectedPing } from './network/raknet/UnconnectedPing'
-import { OpenConnectionRequestOne } from './network/raknet/OpenConnectionRequestOne'
-import { OpenConnectionRequestTwo } from './network/raknet/OpenConnectionRequestTwo'
-import { OpenConnectionReplyTwo } from './network/raknet/OpenConnectionReplyTwo'
-import { OpenConnectionReplyOne } from './network/raknet/OpenConnectionReplyOne'
-import { IncompatibleProtocol } from './network/raknet/IncompatibleProtocol'
-import { Packet } from './network/Packet'
+import { BinaryData, IAddress } from '@strdstnet/utils.binary'
 import { EventEmitter } from '@strdstnet/utils.events'
 import { API, ServerType } from './API'
 import { Server } from './network/Server'
-import { EzTransfer } from './network/custom/EzTransfer'
+import {
+  OpenConnectionRequestOne,
+  UnconnectedPing,
+  UnconnectedPong,
+  Packets, Protocol,
+} from '@strdstnet/protocol'
+import { FamilyStrToInt, IPacketHandlerArgs, ISendPacketArgs } from './utils/types'
+
+export interface ServerOpts {
+  address: string,
+  port: number,
+  maxPlayers: number,
+  motd: {
+    line1: string,
+    line2: string,
+  },
+}
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -35,6 +40,8 @@ type ServerEvents = {
 
 // TODO: Merge with Stardust.ts
 export class Neptune extends EventEmitter<ServerEvents> {
+
+  public static id = 80725802752n
 
   public static i: Neptune
 
@@ -153,7 +160,7 @@ export class Neptune extends EventEmitter<ServerEvents> {
       line1, line2, maxPlayers,
       numPlayers: this.clients.size,
       gamemode: 'Survival',
-      serverId: BigInt(Protocol.SERVER_ID),
+      serverId: BigInt(Neptune.id),
     })
   }
 
@@ -187,7 +194,7 @@ export class Neptune extends EventEmitter<ServerEvents> {
       packet: new UnconnectedPong({
         pingId,
         motd: this.motd,
-        serverId: Protocol.SERVER_ID,
+        serverId: Neptune.id,
       }),
       socket,
       address,
