@@ -33,7 +33,7 @@
     "@strdst/tsconfig": "^1.0.3",
     "@types/chalk": "^2.2.0",
     "@types/fs-extra": "^9.0.2",
-    "@types/jest": "^26.0.15",
+    "@types/jest": "^26.0.22",
     "@types/math3d": "^0.2.3",
     "@types/node": "^14.14.37",
     "@types/pbf": "^3.0.2",
